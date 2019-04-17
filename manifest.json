@@ -1,6 +1,8 @@
-{
+{  
+    "name": "tgw eq",
+    "short_name": "eq",
     "scope": "/tgw-eq/",
     "start_url": "/tgw-eq/eq.html",
     "display": "fullscreen",
     "orientation": "landscape"
-  }
+}
