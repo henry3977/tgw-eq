@@ -24,9 +24,9 @@
                     :key="task[7]"
                     style="margin-top: 15px">
                     <div class="card">
-                        <img :src ="'/img/' + task[7] +'.jpg' "
+                        <img :src ="'/tgw-eq/img/' + task[7] +'.jpg' "
                             class="card-img-top" 
-                            onerror="this.src = '/img/noimg.png'"
+                            onerror="this.src = '/tgw-eq/img/noimg.png'"
                             :alt="'고유번호 : ' + task[7] + '사진'">
                         <div class="card-body">
                             <h5 class="card-title">고유번호 : {{ task[7] }}</h5>
@@ -50,7 +50,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="/js/common.js"></script>
+        <script src="/tgw-eq/js/common.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
