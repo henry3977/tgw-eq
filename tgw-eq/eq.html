@@ -1,41 +1,66 @@
 <html lang="ko">
     <head>
-        <title>장비목록</title>
-
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        
+        <title>EQ</title>
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+        
+        <style>
+        .primary {color: #007bff !important}
+        </style>
     </head>
     <body>
-        <div class="container" id="app">
+        <div class="container" 
+             id="app">
             <div class="row">
                 <div class="col-md-12" style="margin-top: 15px">
                     <div class="input-group">
-                        <input type="text" class="form-control" v-model="search" autocomplete="off">
+                        <input type="text" 
+                               class="form-control primary" 
+                               v-model="search" 
+                               autocomplete="off">
+                        <div class="input-group-append">
+                            <span class="input-group-text">{{ eqList.length }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">          
 
                 <div class="col-md-4"
-                    v-for="(task, index) in taskList" 
-                    :key="task[7]"
+                    v-for="(eq, index) in eqList" 
+                    :key="eq[7]"
                     style="margin-top: 15px">
                     <div class="card">
-                        <img :src ="'/tgw-eq/img/' + task[7] +'.jpg' "
+                        <img :src ="'/tgw-eq/img/' + eq[7] +'.jpg' "
                             class="card-img-top" 
                             onerror="this.src = '/tgw-eq/img/noimg.png'"
-                            :alt="'고유번호 : ' + task[7] + '사진'">
+                            :alt="'고유번호 : ' + eq[7] + '사진'">
                         <div class="card-body">
-                            <h5 class="card-title">고유번호 : {{ task[7] }}</h5>
-                            <h6 class="card-subtitle text-muted">{{ task[2] }}</h6>
+                            <h5 class="card-title">고유번호 : {{ eq[7] }}</h5>
+                            <h6 class="card-subtitle text-muted">{{ setSubTitle(eq[3], eq[4]) }}</h6>
                             <p class="card-text text-muted">
-                                {{ task[3] }} {{ task[4] }}
+                                    <span :class="{primary: search == eq[2]}" 
+                                          @click="setSearch(eq[2])">{{ eq[2] }}</span>
                             </p>
-                            <p class="card-text"><small class="text-muted">{{ task[0] + ' ' + task[1]}}</small></p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <span :class="{primary: search == eq[0]}" 
+                                          @click="setSearch(eq[0])">{{ eq[0] }}</span> |
+                                    <span :class="{primary: search == eq[1]}" 
+                                          @click="setSearch(eq[1])">{{ eq[1] }}</span>
+                                </small>
+                            </p>
                             <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted"
+                                   :class="{primary: search == eq[8]}" 
+                                   @click="setSearch(eq[8])">{{ eq[8] }}</small>
                         </div>
                     </div>
                 </div>
@@ -47,30 +72,33 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
                 data: {
                     search: '',
-                    tasks: [],
+                    eqs: [],
                     apiKey:'AIzaSyAg3mWGriSst2_PBoy6IBI5EVj_V4JP8Qg',
                     spreadsheetId:'1L1pkLhHTXgLI3hIYBXK1Mwthtp6Ve1fL6j3IwoIprNE',
                 },
                 created: function (params) {
                     this.search = this.getRequest('search')
-                    this.getTasks()
+                    this.getEqs()
                 },
                 computed: {
                     apiUrl: function () {
-                        return 'https://sheets.googleapis.com/v4/spreadsheets/' + this.spreadsheetId + '/values/A:I?key=' + this.apiKey
+                        return 'https://sheets.googleapis.com/v4/spreadsheets/' 
+                            + this.spreadsheetId 
+                            + '/values/A:I?key=' 
+                            + this.apiKey
                     },
-                    taskList: function () {
+                    eqList: function () {
                         if (this.search) {
                             var search = this.search
-                            return this.tasks.filter(function (n) {
+                            return this.eqs.filter(function (n) {
                                 for (let index = 0; index < n.length; index++) {
                                     if(n[index].indexOf(search) != -1) {
                                         return n
@@ -78,22 +106,30 @@
                                 }
                             })
                         } else {
-                            return this.tasks
+                            return this.eqs
                         }
-                    }
+                    },
                 },
                 methods: {
-                    getTasks: function () {
+                    getEqs: function () {
                         axios.get(this.apiUrl)
                             .then(function (response) {
                                 var arr = response.data.values
                                 arr.splice(0, 1)
-                                this.tasks = arr
+                                this.eqs = arr
                             }.bind(this)).catch(function (error) {
                                 console.log(error)
                                 console.log(error.response)
                                 alert('Error!!')
                             })
+                    },
+                    setSearch: function (search) {
+                        console.log(search)
+                        // var search = event.target.innerHTML
+                        this.search = search == this.search ? '' : search
+                    },
+                    setSubTitle: function (brand, modelNo) {
+                        return (brand || modelNo) ? brand + ' | ' + modelNo : '-'   
                     },
                     getRequest: function (key) {
                         var arr = decodeURI(location.search).replace('?', '').split('&')
