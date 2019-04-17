@@ -24,9 +24,9 @@
                     :key="task[7]"
                     style="margin-top: 15px">
                     <div class="card">
-                        <img :src ="'/tgw-eq/img/' + task[7] +'.jpg' "
+                        <img :src ="'../img/' + task[7] +'.jpg' "
                             class="card-img-top" 
-                            onerror="this.src = '/tgw-eq/img/noimg.png'"
+                            onerror="this.src = '../img/noimg.png'"
                             :alt="'고유번호 : ' + task[7] + '사진'">
                         <div class="card-body">
                             <h5 class="card-title">고유번호 : {{ task[7] }}</h5>
@@ -50,7 +50,6 @@
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="/tgw-eq/js/common.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
@@ -61,7 +60,7 @@
                     spreadsheetId:'1L1pkLhHTXgLI3hIYBXK1Mwthtp6Ve1fL6j3IwoIprNE',
                 },
                 created: function (params) {
-                    this.search = getRequest('search')
+                    this.search = this.getRequest('search')
                     this.getTasks()
                 },
                 computed: {
@@ -87,27 +86,23 @@
                     getTasks: function () {
                         axios.get(this.apiUrl)
                             .then(function (response) {
-                                var search = getRequest('search')
                                 var arr = response.data.values
                                 arr.splice(0, 1)
                                 this.tasks = arr
-                                // if (search) {
-                                //     var arr = arr.filter(function (n) {
-                                //         for (let index = 0; index < n.length; index++) {
-                                //             if(n[index].indexOf(search) != -1) {
-                                //                 return n
-                                //             }
-                                //         }
-                                   
-                                //     })
-                                // }
-                                // console.log(arr)
-                                // this.tasks = arr
                             }.bind(this)).catch(function (error) {
                                 console.log(error)
                                 console.log(error.response)
                                 alert('Error!!')
                             })
+                    },
+                    getRequest: function (key) {
+                        var arr = decodeURI(location.search).replace('?', '').split('&')
+                        for (let index = 0; index < arr.length; index++) {
+                            if (key == arr[index].split('=')[0]) {
+                                return arr[index].split('=')[1]
+                            }
+                        }
+                        return ''
                     }
                 }
             })
