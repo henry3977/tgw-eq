@@ -20,8 +20,9 @@
                 <div class="col-md-12" style="margin-top: 15px">
                     <div class="input-group">
                         <input type="text" 
-                               class="form-control primary" 
+                               class="form-control" 
                                v-model="search" 
+                               @change="setList"
                                autocomplete="off">
                         <div class="input-group-append">
                             <span class="input-group-text">{{ eqList.length }}</span>
@@ -32,36 +33,44 @@
             <div class="row">          
 
                 <div class="col-md-4"
-                    v-for="(eq, index) in eqList" 
+                    v-for="(eq, index) in list" 
                     :key="eq[7]"
                     style="margin-top: 15px">
-                    <div class="card">
+
+                    <div class="card"
+                         :class="{'border-danger': eq[9] == '고장'}">
                         <img :src ="'/tgw-eq/img/' + eq[7] +'.jpg' "
                             class="card-img-top" 
                             onerror="this.src = '/tgw-eq/img/noimg.png'"
                             :alt="'고유번호 : ' + eq[7] + '사진'">
+
                         <div class="card-body">
-                            <h5 class="card-title">고유번호 : {{ eq[7] }}</h5>
+                            <h5 class="card-title"
+                                :class="{'text-danger': eq[9] == '고장'}">고유번호 : {{ eq[7] }}</h5>
                             <h6 class="card-subtitle text-muted">{{ setSubTitle(eq[3], eq[4]) }}</h6>
+
                             <p class="card-text text-muted">
-                                    <span :class="{primary: search == eq[2]}" 
-                                          @click="setSearch(eq[2])">{{ eq[2] }}</span>
+                                <span :class="{primary: search == eq[2]}" 
+                                        @click="setSearch(eq[2])">{{ eq[2] }}</span>
                             </p>
-                            <p class="card-text">
-                                <small class="text-muted">
+
+                            <p class="card-text text-muted">
+                                <small>
                                     <span :class="{primary: search == eq[0]}" 
                                           @click="setSearch(eq[0])">{{ eq[0] }}</span> |
                                     <span :class="{primary: search == eq[1]}" 
                                           @click="setSearch(eq[1])">{{ eq[1] }}</span>
                                 </small>
                             </p>
-                            <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+
                         </div>
+
                         <div class="card-footer">
                             <small class="text-muted"
                                    :class="{primary: search == eq[8]}" 
                                    @click="setSearch(eq[8])">{{ eq[8] }}</small>
                         </div>
+
                     </div>
                 </div>
            
@@ -81,6 +90,7 @@
                 data: {
                     search: '',
                     eqs: [],
+                    list: [],
                     apiKey:'AIzaSyAg3mWGriSst2_PBoy6IBI5EVj_V4JP8Qg',
                     spreadsheetId:'1L1pkLhHTXgLI3hIYBXK1Mwthtp6Ve1fL6j3IwoIprNE',
                 },
@@ -92,7 +102,7 @@
                     apiUrl: function () {
                         return 'https://sheets.googleapis.com/v4/spreadsheets/' 
                             + this.spreadsheetId 
-                            + '/values/A:I?key=' 
+                            + '/values/A:J?key=' 
                             + this.apiKey
                     },
                     eqList: function () {
@@ -113,19 +123,19 @@
                 methods: {
                     getEqs: function () {
                         axios.get(this.apiUrl)
-                            .then(function (response) {
-                                var arr = response.data.values
-                                arr.splice(0, 1)
-                                this.eqs = arr
-                            }.bind(this)).catch(function (error) {
-                                console.log(error)
-                                console.log(error.response)
-                                alert('Error!!')
-                            })
+                        .then(function (response) {
+                            var arr = response.data.values
+                            arr.splice(0, 1)
+                            this.eqs = arr
+                            this.setList()
+                        }.bind(this))
+                        .catch(function (error) {
+                            console.log(error)
+                            console.log(error.response)
+                            alert('Error!!')
+                        })
                     },
                     setSearch: function (search) {
-                        console.log(search)
-                        // var search = event.target.innerHTML
                         this.search = search == this.search ? '' : search
                     },
                     setSubTitle: function (brand, modelNo) {
@@ -139,6 +149,21 @@
                             }
                         }
                         return ''
+                    },
+                    setList: function (params) {
+                        if (this.search) {
+                            var search = this.search
+                            this.list = this.eqs.filter(function (n) {
+                                for (let index = 0; index < n.length; index++) {
+                                    if(n[index].indexOf(search) != -1) {
+                                        return n
+                                    }
+                                }
+                            })
+                        } else {
+                            this.list = this.eqs
+                        }
+                        history.pushState(null, null, '?search=' + this.search);
                     }
                 }
             })
