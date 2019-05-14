@@ -10,8 +10,14 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="manifest" href="/tgw-eq/manifest.json">
         <style>
+        body {
+            transition:all 0.7s;
+        }
         .transition-fade-in {
             transition:all 0.7s;
+        }
+        .transition-move {
+            transition:all 0.2s;
         }
         .primary {color: #007bff !important}
         </style>
@@ -19,13 +25,14 @@
     <body>
         <div class="container" 
              id="app">
-            <div class="row">
+            <div class="row transition-move" :style="{'margin-top': list.length ? 0 : '30%'}">  
                 <div class="col-md-12" style="margin-top: 15px">
                     <div class="input-group">
                         <input type="text" 
                                class="form-control" 
                                v-model="search"
                                @change="setList"
+                               placeholder="장비를 검색하세요"
                                autocomplete="off">
                         <div class="input-group-append">
                             <span class="input-group-text">{{ list.length }}</span>
@@ -69,6 +76,7 @@
                         </div>
 
                         <div class="card-footer">
+                            <small class="text-muted">지침서 :</small>
                             <small class="text-muted"
                                    :class="{primary: search == eq[8]}" 
                                    @click="setSearch(eq[8])">{{ eq[8] }}</small>
@@ -169,7 +177,7 @@
                         } else {
                             this.list = []
                         }
-
+                        document.body.scrollTop = 0;
                         history.pushState(null, null, '?search=' + this.search);
                     }
                 }
