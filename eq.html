@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="manifest" href="/tgw-eq/manifest.json">
         <style>
+        .transition-fade-in {
+            transition:all 0.7s;
+        }
         .primary {color: #007bff !important}
         </style>
     </head>
@@ -21,17 +24,17 @@
                     <div class="input-group">
                         <input type="text" 
                                class="form-control" 
-                               v-model="search" 
+                               v-model="search"
                                @change="setList"
                                autocomplete="off">
                         <div class="input-group-append">
-                            <span class="input-group-text">{{ eqList.length }}</span>
+                            <span class="input-group-text">{{ list.length }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">          
-
+            <div class="row transition-fade-in"
+                :style="{opacity: list.length ? 1 : 0}">       
                 <div class="col-md-4"
                     v-for="(eq, index) in list" 
                     :key="eq[7]"
@@ -105,20 +108,22 @@
                             + '/values/A:J?key=' 
                             + this.apiKey
                     },
-                    eqList: function () {
-                        if (this.search) {
-                            var search = this.search
-                            return this.eqs.filter(function (n) {
-                                for (let index = 0; index < n.length; index++) {
-                                    if(n[index].indexOf(search) != -1) {
-                                        return n
-                                    }
-                                }
-                            })
-                        } else {
-                            return this.eqs
-                        }
-                    },
+                    // eqList: function () {
+                        
+                    //     if (this.search) {
+                    //         var search = this.search
+                    //         return this.eqs.filter(function (n) {
+                    //             for (let index = 0; index < n.length; index++) {
+                    //                 if(n[index].indexOf(search) != -1) {
+                    //                     return n
+                    //                 }
+                    //             }
+                    //         })
+                    //     } else {
+                    //         return []
+                    //     }
+                        
+                    // },
                 },
                 methods: {
                     getEqs: function () {
@@ -136,7 +141,8 @@
                         })
                     },
                     setSearch: function (search) {
-                        this.search = search == this.search ? '' : search
+                        this.search = search
+                        this.setList()
                     },
                     setSubTitle: function (brand, modelNo) {
                         return (brand || modelNo) ? brand + ' | ' + modelNo : '-'   
@@ -150,7 +156,7 @@
                         }
                         return ''
                     },
-                    setList: function (params) {
+                    setList: function () {
                         if (this.search) {
                             var search = this.search
                             this.list = this.eqs.filter(function (n) {
@@ -161,8 +167,9 @@
                                 }
                             })
                         } else {
-                            this.list = this.eqs
+                            this.list = []
                         }
+
                         history.pushState(null, null, '?search=' + this.search);
                     }
                 }
