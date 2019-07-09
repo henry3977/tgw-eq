@@ -67,7 +67,7 @@
                          :class="{'border-danger': eq[9] == '고장'}">
                         <img :src ="'/img/' + eq[7] +'.jpg' "
                             class="card-img-top" 
-                            onerror="this.src = '/tgw-eq/img/noimg.png'"
+                            onerror="this.src = '/img/noimg.png'"
                             :alt="'고유번호 : ' + eq[7] + '사진'">
 
                         <div class="card-body">
@@ -121,7 +121,7 @@
                     apiKey:'AIzaSyAg3mWGriSst2_PBoy6IBI5EVj_V4JP8Qg',
                     spreadsheetId:'1L1pkLhHTXgLI3hIYBXK1Mwthtp6Ve1fL6j3IwoIprNE',
                 },
-                created: function (params) {
+                created: function () {
                     this.search = this.getRequest('search')
                     this.getEqs()
                 },
@@ -131,23 +131,7 @@
                             + this.spreadsheetId 
                             + '/values/A:J?key=' 
                             + this.apiKey
-                    },
-                    // eqList: function () {
-                        
-                    //     if (this.search) {
-                    //         var search = this.search
-                    //         return this.eqs.filter(function (n) {
-                    //             for (let index = 0; index < n.length; index++) {
-                    //                 if(n[index].indexOf(search) != -1) {
-                    //                     return n
-                    //                 }
-                    //             }
-                    //         })
-                    //     } else {
-                    //         return []
-                    //     }
-                        
-                    // },
+                    }
                 },
                 methods: {
                     getEqs: function () {
