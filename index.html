@@ -39,8 +39,26 @@
         </style>
     </head>
     <body>
-        <div class="container" 
-             id="app">
+
+        <div class="container" id="app">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">비고</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{ memo }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
             <div class="row transition-move" :style="{'margin-top': list.length ? 0 : '30%'}">  
                 <div class="col-md-12" style="margin-top: 15px">
                     <div class="input-group">
@@ -63,16 +81,20 @@
                     :key="eq[7]"
                     style="margin-top: 15px">
 
-                    <div class="card"
-                         :class="{'border-danger': eq[9] == '고장'}">
+                    <div class="card">
                         <img :src ="'/img/' + eq[7] +'.jpg' "
                             class="card-img-top" 
                             onerror="this.src = '/img/noimg.png'"
                             :alt="'고유번호 : ' + eq[7] + '사진'">
 
                         <div class="card-body">
-                            <h5 class="card-title"
-                                :class="{'text-danger': eq[9] == '고장'}">고유번호 : {{ eq[7] }}</h5>
+                            <h5 class="card-title">
+                                고유번호 : {{ eq[7] }}
+                                <span v-if="eq[9] == '고장'" 
+                                    class="badge badge-danger">{{ eq[9] }}</span>
+                                <span v-if="eq[9] == '수리중'" 
+                                    class="badge badge-warning">{{ eq[9] }}</span>
+                            </h5>
                             <h6 class="card-subtitle text-muted">{{ setSubTitle(eq[3], eq[4]) }}</h6>
 
                             <p class="card-text text-muted">
@@ -88,7 +110,15 @@
                                           @click="setSearch(eq[1])">{{ eq[1] }}</span>
                                 </small>
                             </p>
-
+                            <p>
+                                <button 
+                                    class="btn btn-primary btn-sm"
+                                    type="button"
+                                    :disabled="eq[6] == ''"
+                                    data-toggle="modal" 
+                                    data-target="#exampleModal"
+                                    @click="showModal(eq[6])">비고</button>
+                            </p>
                         </div>
 
                         <div class="card-footer">
@@ -97,12 +127,9 @@
                                    :class="{primary: search == eq[8]}" 
                                    @click="setSearch(eq[8])">{{ eq[8] }}</small>
                         </div>
-
                     </div>
                 </div>
-           
             </div>
-
         </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -118,6 +145,7 @@
                     search: '',
                     eqs: [],
                     list: [],
+                    memo: '',
                     apiKey:'AIzaSyAg3mWGriSst2_PBoy6IBI5EVj_V4JP8Qg',
                     spreadsheetId:'1L1pkLhHTXgLI3hIYBXK1Mwthtp6Ve1fL6j3IwoIprNE',
                 },
@@ -141,6 +169,7 @@
                             arr.splice(0, 1)
                             this.eqs = arr
                             this.setList()
+                            console.log(this.eqs)
                         }.bind(this))
                         .catch(function (error) {
                             console.log(error)
@@ -179,6 +208,9 @@
                         }
                         document.body.scrollTop = 0;
                         history.pushState(null, null, '?search=' + this.search);
+                    },
+                    showModal: function (memo) {
+                        this.memo = memo
                     }
                 }
             })
