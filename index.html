@@ -90,9 +90,9 @@
                         <div class="card-body">
                             <h5 class="card-title">
                                 고유번호 : {{ eq[7] }}
-                                <span v-if="eq[9] == '고장'" 
+                                <span v-if="eq[9] == '폐기'" 
                                     class="badge badge-danger">{{ eq[9] }}</span>
-                                <span v-if="eq[9] == '수리중'" 
+                                <span v-if="eq[9] == '고장'" 
                                     class="badge badge-warning">{{ eq[9] }}</span>
                             </h5>
                             <h6 class="card-subtitle text-muted">{{ setSubTitle(eq[3], eq[4]) }}</h6>
