@@ -90,10 +90,10 @@
                         <div class="card-body">
                             <h5 class="card-title">
                                 고유번호 : {{ eq[7] }}
-                                <span v-if="eq[9] == '폐기'" 
+                                <!-- <span v-if="eq[9] == '폐기'" 
                                     class="badge badge-danger">{{ eq[9] }}</span>
                                 <span v-if="eq[9] == '고장'" 
-                                    class="badge badge-warning">{{ eq[9] }}</span>
+                                    class="badge badge-warning">{{ eq[9] }}</span> -->
                             </h5>
                             <h6 class="card-subtitle text-muted">{{ setSubTitle(eq[3], eq[4]) }}</h6>
 
@@ -110,7 +110,7 @@
                                           @click="setSearch(eq[1])">{{ eq[1] }}</span>
                                 </small>
                             </p>
-                            <p>
+                            <!-- <p>
                                 <button 
                                     class="btn btn-primary btn-sm"
                                     type="button"
@@ -118,15 +118,15 @@
                                     data-toggle="modal" 
                                     data-target="#exampleModal"
                                     @click="showModal(eq[6])">비고</button>
-                            </p>
+                            </p> -->
                         </div>
-
+<!-- 
                         <div class="card-footer">
                             <small class="text-muted">지침서 :</small>
                             <small class="text-muted"
                                    :class="{primary: search == eq[8]}" 
                                    @click="setSearch(eq[8])">{{ eq[8] }}</small>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
